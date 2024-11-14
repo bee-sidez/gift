@@ -1,0 +1,96 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gift Box Game</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background-color: #f8f9fa;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      .button {
+        padding: 15px 30px;
+        font-size: 18px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px;
+      }
+      .button:disabled {
+        background-color: #aaa;
+      }
+      .message {
+        font-size: 24px;
+        margin-top: 20px;
+      }
+      .gift-image {
+        width: 150px;
+        height: auto;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Happy Birthday Akka!🥰</h1>
+    <p>Choose a gift box 🤩</p>
+
+    <!-- Buttons to reveal gifts -->
+    <button id="giftButton1" class="button" onclick="revealGift(1)">
+      Gift Box 1
+    </button>
+    <button id="giftButton2" class="button" onclick="revealGift(2)">
+      Gift Box 2
+    </button>
+
+    <!-- Result message and image -->
+    <div id="message" class="message"></div>
+    <img
+      id="giftImage"
+      class="gift-image"
+      style="display: none"
+      alt="Gift Image"
+    />
+
+    <script>
+      async function revealGift(buttonNumber) {
+        const button1 = document.getElementById("giftButton1");
+        const button2 = document.getElementById("giftButton2");
+        const message = document.getElementById("message");
+        const giftImage = document.getElementById("giftImage");
+
+        // Disable both buttons while loading
+        button1.disabled = true;
+        button2.disabled = true;
+        message.innerText = "Revealing your gift...";
+
+        // Fetch gift from server
+        const response = await fetch("/get_gift");
+        const data = await response.json();
+
+        // Display gift description and image
+        message.innerText = data.description;
+        giftImage.src = data.image;
+        giftImage.style.display = "block";
+
+        // Re-enable both buttons after a short delay (e.g., 5 seconds)
+        setTimeout(() => {
+          button1.disabled = false;
+          button2.disabled = false;
+          message.innerText = "Choose a gift box 🤩";
+          giftImage.style.display = "none";
+        }, 5000);
+      }
+    </script>
+  </body>
+</html>
